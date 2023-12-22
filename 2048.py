@@ -70,7 +70,8 @@ def is_game_over(board):
     return True
 
 def jian(inp):
-    # v1.0.1: 加入wasd操控
+    # v1.0.1: 适配mac键盘
+    # v1.0.2: 加入wasd操作
     if inp == "\x1b[A" or inp == "w":
         inp = "up"
     elif inp == "\x1b[B" or inp == "s":
@@ -84,10 +85,11 @@ def jian(inp):
         
 
 # 主循环
-def main(player="unnamed_user"):
+def main(player):
     logging.basicConfig(filename='game_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     board = initialize_board()
-    logging.info("游戏开始")
+    if user_name != "unnamed_user":
+        logging.info(f"玩家 {player} 的新游戏开始，初始图为 {board}")
     while not is_game_over(board):
         print_board(board)
         direction = input("请输入移动方向（left/right/up/down）：")
@@ -100,7 +102,8 @@ def main(player="unnamed_user"):
             if new_board != original_board:  # 检查棋盘是否发生了变化
                 board = new_board
                 add_new_tile(board)
-                logging.debug(f"玩家 {player} 执行了动作 {move}")
+                if user_name != "unnamed_user":
+                    logging.debug(f"玩家 {player} 执行了动作 {direction}，当前地图为 {board}")
             else:
                 print(f"命令 {direction} 无法使游戏状态改变，请输入 left, right, up 或 down 中可执行的操作。")
         else:
@@ -111,8 +114,8 @@ def main(player="unnamed_user"):
 
 if __name__ == "__main__":
     a = input("Do you want to be a registered user. Press Y/n:")
-    if a == "Y":
+    if a == "Y" or a == "y":
         user_name = input("Enter your name:")
+    if a == "N" or a == "n":
+        user_name = "unnamed_user"
     main(user_name)
-
-    # 以后加入用户数据库
