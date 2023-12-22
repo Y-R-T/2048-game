@@ -1,6 +1,7 @@
 import random
 import copy
-
+import logging
+    
 def initialize_board():
     board = [[0] * 4 for _ in range(4)]
     for _ in range(2):
@@ -68,23 +69,25 @@ def is_game_over(board):
                 return False
     return True
 
-# 适配mac方向键
-def jian(inp): 
-    if inp == "\x1b[A":
+def jian(inp):
+    # v1.0.1: 加入wasd操控
+    if inp == "\x1b[A" or inp == "w":
         inp = "up"
-    if inp == "\x1b[B":
+    elif inp == "\x1b[B" or inp == "s":
         inp = "down"
-    if inp == "\x1b[C":
+    elif inp == "\x1b[C" or inp == "d":
         inp = "right"
-    if inp == "\x1b[D":
-        inp = "left"   
-    return inp         
+    elif inp == "\x1b[D" or inp == "a":
+        inp = "left"
+    return inp        
     
         
 
 # 主循环
-def main():
+def main(player="unnamed_user"):
+    logging.basicConfig(filename='game_log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     board = initialize_board()
+    logging.info("游戏开始")
     while not is_game_over(board):
         print_board(board)
         direction = input("请输入移动方向（left/right/up/down）：")
@@ -97,6 +100,7 @@ def main():
             if new_board != original_board:  # 检查棋盘是否发生了变化
                 board = new_board
                 add_new_tile(board)
+                logging.debug(f"玩家 {player} 执行了动作 {move}")
             else:
                 print(f"命令 {direction} 无法使游戏状态改变，请输入 left, right, up 或 down 中可执行的操作。")
         else:
@@ -106,4 +110,9 @@ def main():
     print_board(board)
 
 if __name__ == "__main__":
-    main()
+    a = input("Do you want to be a registered user. Press Y/n:")
+    if a == "Y":
+        user_name = input("Enter your name:")
+    main(user_name)
+
+    # 以后加入用户数据库
