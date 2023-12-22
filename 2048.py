@@ -68,7 +68,8 @@ def is_game_over(board):
                 return False
     return True
 
-def jian(inp):
+# 适配mac方向键
+def jian(inp): 
     if inp == "\x1b[A":
         inp = "up"
     if inp == "\x1b[B":
